@@ -4,6 +4,7 @@ const users = require('./routes/users');
 const courses = require('./routes/courses') ;
 const bodyParser = require('body-parser');
 const mongoose = require('./config/database'); //database configuration
+const cors = require('cors');
 var jwt = require('jsonwebtoken');
 const app = express();
 
@@ -15,28 +16,16 @@ mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 
-// public route
-app.use('/users', users);
+/* route requests for static files to appropriate directory */
+app.use(express.static('front'));
 
-// private route
-app.use('/courses', validateUser, courses);
+// public route
+app.use('/api/users', users);
+app.use('/api/courses', courses);
 
 app.get('/favicon.ico', function(req, res) {
     res.sendStatus(204);
 });
-
-function validateUser(req, res, next) {
-  jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
-    if (err) {
-      res.json({status:"error", message: err.message, data:null});
-    }else{
-      // add user id to request
-      req.body.userId = decoded.id;
-      next();
-    }
-  });
-  
-}
 
 // express doesn't consider not found 404 as an error so we need to handle 404 it explicitly
 // handle 404 error
