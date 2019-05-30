@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');				
 
 module.exports = {
-	create: async function(req, res, next) {
+	register: async function(req, res, next) {
 		const { email } = req.body
 		try {
 			if(await userModel.findOne({email}))
@@ -21,12 +21,11 @@ module.exports = {
 	},
 
 	authenticate: async function(req, res, next) {
-
 		const { email, password } = req.body
 		const user = await userModel.findOne({ email }).select('+password');
 
 		if(!user){
-			return res.status(400).send({ error: 'User not found' });
+			return res.status(400).send({ error: 'User not found '});
 		}
 
 		if(!await bcrypt.compare(password, user.password)) {

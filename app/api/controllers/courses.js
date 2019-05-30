@@ -41,7 +41,8 @@ module.exports = {
 		try {
 			const courseId = req.params.courseId;
 			const newData = {
-				name: req.body.name
+				name: req.body.name,
+				description: req.body.description
 			};
 			const course = await courseModel.findByIdAndUpdate(courseId, newData, {new: true} );
 			res.json({status:"success", message: "Course updated successfully!!!", data:{course: course}});

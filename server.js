@@ -14,7 +14,8 @@ app.set('secretKey', 'qwerty'); // jwt secret token
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(logger('dev'));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({extended: false}));
 
 /* route requests for static files to appropriate directory */
 app.use(express.static('front'));
