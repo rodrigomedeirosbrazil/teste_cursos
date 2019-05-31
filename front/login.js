@@ -26,7 +26,6 @@ export default {
           password: this.password
         })
         .then(response => {
-          this.spinner = false
           let token = response.data.data.token
           if(token) {
             localStorage.setItem("jwt_token", token)
@@ -36,12 +35,14 @@ export default {
           }
         })
         .catch(error => {
-          this.spinner = false
           if(error && error.response && error.response.data && error.response.data.error) {
             this.error = error.response.data.error
           } else {
             this.error = "An error occurred. Try again."
           }
+        })
+        .finally(() => {
+          this.spinner = false;
         })
     }
   },

@@ -1,14 +1,24 @@
 
 const courseModel = require('../models/courses');
-const userModel = require('../models/users');					
+const userModel = require('../models/users');	
+const mongoose = require('mongoose');				
 
 module.exports = {
 	getById: async function(req, res) {
 		try {
+			let isSubscribed = false
 			const { courseId } = req.params
-			const course = await courseModel.findById(courseId);
-			res.json({status:"success", message: "Course found!!!", data:{course: course}});
+			let course = await courseModel.findById(courseId)
+			const userId = req.body.userId
+			await userModel.findOne({
+					_id: mongoose.Types.ObjectId(userId),
+					'courses.course_id': mongoose.Types.ObjectId(courseId)
+				},  
+				(err, found) =>  { if(found) isSubscribed = true }
+			)
+			res.json({status:"success", message: "Course found!!!", data:{course: course, isSubscribed: isSubscribed}});
 		} catch (err) {
+			console.log(err)
 			return res.status(404).send({status:"error", message: "Course not found", data: null});
 		}
 	},

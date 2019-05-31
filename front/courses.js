@@ -2,7 +2,8 @@ export default {
   name: "Courses",
   data () {
     return {
-      courses:[]
+      courses:[],
+      isLogged: false
     }
   },
   mounted () {
@@ -11,6 +12,7 @@ export default {
         .get('/api/courses')
         .then(response => this.courses = response.data.data.courses)
         .catch(error => console.log(error))
+    this.isLogged = localStorage.getItem("jwt_token") !== null
   },
   template: `
     <div class="container-fluid">
@@ -22,7 +24,8 @@ export default {
               <p class="card-text">{{ course.description }}</p>
             </div>
             <div class="card-footer text-muted">
-              <a href="#/login" class="btn btn-primary">Subscribe</a>
+              <a :href="'#/course/' + course._id" class="btn btn-primary" v-if="isLogged">Subscribe</a>
+              <a href="#/login" class="btn btn-primary" v-if="!isLogged">Login to Subscribe</a>
             </div>
           </div>
         </div>
